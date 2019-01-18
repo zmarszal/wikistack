@@ -3,12 +3,12 @@ const router = express.Router();
 const { Page } = require('./../models');
 const models = require('./../models');
 const addPage = require('./../views/addPage');
+const wikiPage = require('./../views/wikipage');
+const homePage = require('./../views/main');
 
-router.get('/', (req, res, next) => {
-  // console.log(models.db);
-  // const allWikis = await models.db.Page.findAll();
-  // res.send(allWikis);
-  res.send('got to /wiki');
+router.get('/', async (req, res, next) => {
+  const allWikis = await Page.findAll();
+  res.send(homePage(allWikis));
 });
 
 router.post('/', async (req, res, next) => {
@@ -26,16 +26,25 @@ router.post('/', async (req, res, next) => {
   // make sure we only redirect *after* our save is complete!
   // note: `.save` returns a promise.
   try {
-    await page.save();
-    console.log(page);
-    res.redirect('/');
-  } catch (error) { next(error) }
+    const newPage = await page.save();
+    res.redirect(`/wiki/${newPage.slug}`);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get('/add', (req, res, next) => {
   res.send(addPage());
 });
 
-
+router.get('/:slug', async (req, res, next) => {
+  //res.send(`hit dynamic route at ${req.params.slug}`);
+  const page = await Page.findOne({
+    where: {
+      slug: req.params.slug
+    }
+  });
+  res.send(wikiPage(page));
+});
 
 module.exports = router;
