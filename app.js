@@ -3,9 +3,11 @@ const express = require('express');
 const morgan = require('morgan');
 const models = require('./models');
 const app = express();
+const bodyParser = require('body-parser');
 
 // console.log(models.User);
 app.use(express.static(__dirname + "/stylesheets"));
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.use('/wiki', require('./Routes/wiki'));
 app.use('/user', require('./Routes/user'));
@@ -22,22 +24,6 @@ const init = async () => {
 
 init();
 
-
-
 app.get('/', (req, res, next) => {
-  res.send(layout(''));
+  res.redirect('/wiki');
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
