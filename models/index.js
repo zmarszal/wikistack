@@ -46,6 +46,8 @@ Page.beforeValidate((page) => {
   page.slug = slug(page.title);
 });
 
+Page.belongsTo(User, { as: 'author' });
+
 
 module.exports = { Page, User };
 // module.exports = { db };

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Page } = require('./../models');
-const models = require('./../models');
+const { User } = require('./../models');
 const addPage = require('./../views/addPage');
 const wikiPage = require('./../views/wikipage');
 const homePage = require('./../views/main');
@@ -16,17 +16,24 @@ router.post('/', async (req, res, next) => {
   // STUDENT ASSIGNMENT:
   // add definitions for `title` and `content`
 
+  const user = User.build({
+    name: req.body.name,
+    email: req.body.email
+  })
+
   const page = Page.build({
     title: req.body.title,
     content: req.body.content,
     // slug: slug(req.body.title),
     // status: req.body.status
+    authorId: user.id
   });
 
   // make sure we only redirect *after* our save is complete!
   // note: `.save` returns a promise.
   try {
     const newPage = await page.save();
+
     res.redirect(`/wiki/${newPage.slug}`);
   } catch (error) {
     next(error);
