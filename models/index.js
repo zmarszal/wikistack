@@ -38,6 +38,14 @@ const User = db.define('user', {
   }
 });
 
+const slug = (title) => {
+  return title.replace(/ /g, '_').replace(/[^\w_]+/g, "");
+  }
 
-// module.exports = { Page, User };
-module.exports = { db };
+Page.beforeValidate((page) => {
+  page.slug = slug(page.title);
+})
+
+
+module.exports = { Page, User };
+// module.exports = { db };
