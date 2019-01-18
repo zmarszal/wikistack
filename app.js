@@ -1,25 +1,19 @@
 const layout = require("./views/layout");
 const express = require('express');
 const morgan = require('morgan');
-const { db } = require('./models');
+const models = require('./models');
 const app = express();
 
-console.log(db.User);
+// console.log(models.User);
+app.use(express.static(__dirname + "/stylesheets"));
 
-db.authenticate().
-then(() => {
-  console.log('connected to the database');
-});
-
-app.get('/', (req, res, next) => {
-  res.send(layout(''));
-});
-
+app.use('/wiki', require('./Routes/wiki'));
+app.use('/user', require('./Routes/user'));
 
 const PORT = 3000;
 
 const init = async () => {
-  await db.sync();
+  await models.db.sync();
 
   app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}!`);
@@ -27,6 +21,18 @@ const init = async () => {
 };
 
 init();
+
+
+
+app.get('/', (req, res, next) => {
+  res.send(layout(''));
+});
+
+
+
+
+
+
 
 
 
